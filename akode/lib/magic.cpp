@@ -18,6 +18,7 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include <cstring>
 #include "akodelib.h"
 #include "magic.h"
 #include "file.h"

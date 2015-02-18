@@ -18,6 +18,8 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include <cstring>
+
 #include <pthread.h>
 #include <semaphore.h>
 #include <assert.h>
