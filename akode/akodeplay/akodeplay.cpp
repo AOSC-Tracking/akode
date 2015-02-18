@@ -25,6 +25,8 @@
 #include "../lib/sink.h"
 #include "../lib/decoder.h"
 
+#include <cstdlib>
+
 #ifdef HAVE_GNU_GETOPT
   #include <getopt.h>
 #else
