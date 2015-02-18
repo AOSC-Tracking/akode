@@ -108,7 +108,7 @@ struct FLACDecoder::private_data {
 static FLAC__StreamDecoderReadStatus flac_read_callback(
         const FLAC__StreamDecoder *,
         FLAC__byte buffer[],
-        unsigned *bytes,
+        size_t *bytes,
         void *client_data)
 {
     FLACDecoder::private_data *data = (FLACDecoder::private_data*)client_data;
