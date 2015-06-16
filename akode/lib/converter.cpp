@@ -26,7 +26,7 @@ namespace aKode {
 
 Converter::Converter(int sample_width) : m_sample_width(sample_width) {}
 
-template<typename T, typename S, template<typename T> class ArithmT, template<typename S> class ArithmS>
+template<typename T, typename S, template<typename T_Type> class ArithmT, template<typename S_Type> class ArithmS>
 static bool __doFrameFP(AudioFrame* in, AudioFrame* out, int sample_width)
 {
     AudioConfiguration config = *in;

@@ -37,7 +37,7 @@ FastResampler::FastResampler() : speed(1.0), sample_rate(44100) {}
 // A fast resampling by linear interpolation
 // I assume you know binary arithmetics and convertions if you're reading this
 // T is the input/output type, Arithm defines the used arithmetic
-template<typename T, typename S, template<typename S> class Arithm>
+template<typename T, typename S, template<typename S_Type> class Arithm>
 static bool _doBuffer(AudioFrame* in, AudioFrame* out, float speed, unsigned sample_rate)
 {
     unsigned long vt_pos_start = 0;  // virtual positions of new sample
