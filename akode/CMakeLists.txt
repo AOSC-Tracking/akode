@@ -21,7 +21,7 @@ string( REGEX REPLACE "^${CMAKE_INSTALL_PREFIX}" "\${prefix}"
         includedir ${INCLUDE_INSTALL_DIR} )
 
 configure_file( akode-config.in akode-config @ONLY )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/akode-config
+install( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/akode-config
          DESTINATION ${BIN_INSTALL_DIR} )
 
 
