@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: akode
+Description: aKode is a simple audio-decoding frame-work
+Version: 2.0.2
+Libs: -L${libdir} -lakode
+Cflags: -I${includedir}

@@ -24,6 +24,10 @@ configure_file( akode-config.in akode-config @ONLY )
 install( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/akode-config
          DESTINATION ${BIN_INSTALL_DIR} )
 
+configure_file( akode.pc.in akode.pc @ONLY )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/akode.pc
+         DESTINATION ${PKGCONFIG_INSTALL_DIR} )
+
 
 ##### build #####################################
 

@@ -1,5 +1,6 @@
 dnl don't remove the below
 dnl AC_OUTPUT(akode/akode-config)
+dnl AC_OUTPUT(akode/akode.pc)
 
 AC_CONFIG_HEADER(akode/lib/akode_export.h)
 
