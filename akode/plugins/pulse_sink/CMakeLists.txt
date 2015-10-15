@@ -21,11 +21,11 @@ include_directories(
 
 ##### library ###################################
 
-set( target libakode_polyp_sink )
+set( target libakode_pulse_sink )
 
 tde_add_library(
   ${target} MODULE
-  SOURCES polyp_sink.cpp
+  SOURCES pulse_sink.cpp
   LINK akode-shared ${PULSE_LIBRARIES}
   DESTINATION ${LIB_INSTALL_DIR}
 )

@@ -1,4 +1,4 @@
-/*  aKode: Polyp-Sink
+/*  aKode: Pulse-Sink
 
     Copyright (C) 2004 Allan Sandfeld Jensen <kde@carewolf.com>
 
@@ -29,15 +29,15 @@
 
 #include "audioframe.h"
 #include "audiobuffer.h"
-#include "polyp_sink.h"
+#include "pulse_sink.h"
 
 #include <iostream>
 
 namespace aKode {
 
-extern "C" { PolypSinkPlugin polyp_sink; };
+extern "C" { PulseSinkPlugin pulse_sink; };
 
-struct PolypSink::private_data
+struct PulseSink::private_data
 {
     private_data() : server(0), error(false) {};
 
@@ -49,7 +49,7 @@ struct PolypSink::private_data
     AudioConfiguration config;
 };
 
-PolypSink::PolypSink()
+PulseSink::PulseSink()
 {
     m_data = new private_data;
     m_data->sample_spec.rate = 44100;
@@ -57,7 +57,7 @@ PolypSink::PolypSink()
     m_data->sample_spec.format = PA_SAMPLE_S16NE;
 }
 
-bool PolypSink::open() {
+bool PulseSink::open() {
     int error = 0;
     m_data->server = pa_simple_new(0, "akode-client", PA_STREAM_PLAYBACK, 0, "", &m_data->sample_spec, 0, 0, &error );
     if (!m_data->server || error != 0) {
@@ -71,20 +71,20 @@ bool PolypSink::open() {
     return true;
 }
 
-void PolypSink::close() {
+void PulseSink::close() {
     if (m_data->server) {
         pa_simple_free(m_data->server);
         m_data->server = 0;
     }
 }
 
-PolypSink::~PolypSink()
+PulseSink::~PulseSink()
 {
     close();
     delete m_data;
 }
 
-int PolypSink::setAudioConfiguration(const AudioConfiguration* config)
+int PulseSink::setAudioConfiguration(const AudioConfiguration* config)
 {
     if (m_data->error) return -1;
 
@@ -109,12 +109,12 @@ int PolypSink::setAudioConfiguration(const AudioConfiguration* config)
     return res;
 }
 
-const AudioConfiguration* PolypSink::audioConfiguration() const
+const AudioConfiguration* PulseSink::audioConfiguration() const
 {
     return &m_data->config;
 }
 
-bool PolypSink::writeFrame(AudioFrame* frame)
+bool PulseSink::writeFrame(AudioFrame* frame)
 {
     if ( m_data->error ) return false;
 

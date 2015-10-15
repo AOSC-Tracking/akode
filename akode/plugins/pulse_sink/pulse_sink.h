@@ -1,4 +1,4 @@
-/*  aKode: Polyp-Sink
+/*  aKode: Pulse-Sink
 
     Copyright (C) 2004 Allan Sandfeld Jensen <kde@carewolf.com>
 
@@ -18,8 +18,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef _AKODE_POLYP_SINK_H
-#define _AKODE_POLYP_SINK_H
+#ifndef _AKODE_PULSE_SINK_H
+#define _AKODE_PULSE_SINK_H
 
 #include "sink.h"
 
@@ -30,10 +30,10 @@ namespace aKode {
 class AudioConfiguration;
 class AudioFrame;
 
-class PolypSink : public Sink {
+class PulseSink : public Sink {
 public:
-    PolypSink();
-    ~PolypSink();
+    PulseSink();
+    ~PulseSink();
     bool open();
     void close();
     int setAudioConfiguration(const AudioConfiguration *config);
@@ -46,14 +46,14 @@ private:
     private_data *m_data;
 };
 
-class PolypSinkPlugin : public SinkPlugin {
+class PulseSinkPlugin : public SinkPlugin {
 public:
-    virtual PolypSink* openSink() {
-        return new PolypSink();
+    virtual PulseSink* openSink() {
+        return new PulseSink();
     }
 };
 
-extern "C" AKODE_EXPORT PolypSinkPlugin polyp_sink;
+extern "C" AKODE_EXPORT PulseSinkPlugin pulse_sink;
 
 } // namespace
 

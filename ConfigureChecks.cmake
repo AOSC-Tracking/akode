@@ -116,7 +116,7 @@ if( WITH_OSS_SINK )
 endif( WITH_OSS_SINK )
 
 
-##### check polyp support #######################
+##### check pulse support #######################
 
 if( WITH_PULSE_SINK )
 

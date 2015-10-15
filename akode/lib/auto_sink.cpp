@@ -65,8 +65,8 @@ AutoSink::~AutoSink()
 bool AutoSink::open()
 {
     // Try Polypaudio
-    if (getenv("POLYP_SERVER"))
-        if (m_data->tryOpen("polyp")) return true;
+    if (getenv("PULSE_SERVER"))
+        if (m_data->tryOpen("pulse")) return true;
     // Try Jack
     if (m_data->tryOpen("jack")) return true;
     // Try ALSA

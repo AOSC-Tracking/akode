@@ -7,9 +7,9 @@ Take especially note of the following:
 - If you wish to install plugins in a non-standard place, you can change the
   AKODE_SEARCHDIR definition in lib/pluginhandler.cpp.
 - You SHOULD not install sinks for backends you don't use. Thus jack_sink
-  should only be installed when jackd is available, polyp_sink only when
-  the polypaudio server is used and alsa_sink only when using a Linux kernel
+  should only be installed when jackd is available, pulse_sink only when
+  the PulseAudio server is used and alsa_sink only when using a Linux kernel
   with ALSA drivers.
   When using direct aKode playback sinks will be autodetected by loading and
-  probing plugins in this order: polyp, jack, alsa, oss
+  probing plugins in this order: pulse, jack, alsa, oss
 
