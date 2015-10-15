@@ -43,9 +43,9 @@
 /* Define if you have libOggFLAC (required for loading OggFLAC files) */
 #undef HAVE_LIBOGGFLAC
 
-/* Define if you have polyplib (required if you want Polypaudio server
+/* Define if you have libpulse (required if you want PulseAudio server
    support) */
-#undef HAVE_LIBPOLYP
+#undef HAVE_LIBPULSE
 
 /* defined if you have libsamplerate library and header */
 #undef HAVE_LIBSAMPLERATE

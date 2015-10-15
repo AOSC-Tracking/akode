@@ -49,7 +49,7 @@ OPTION( WITH_LIBLTDL "Build with libltdl" ${WITH_ALL_OPTIONS} )
 
 OPTION( WITH_ALSA_SINK "Build with alsa sink" ${WITH_ALL_OPTIONS} )
 OPTION( WITH_JACK_SINK "Build with jack sink" ${WITH_ALL_OPTIONS} )
-OPTION( WITH_POLYP_SINK "Build with polyp sink" OFF )
+OPTION( WITH_PULSE_SINK "Build with pulseaudio sink" OFF )
 OPTION( WITH_OSS_SINK "Build with oss sink" ${WITH_ALL_OPTIONS} )
 OPTION( WITH_SUN_SINK "Build with sun sink" OFF )
 

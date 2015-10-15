@@ -118,15 +118,15 @@ endif( WITH_OSS_SINK )
 
 ##### check polyp support #######################
 
-if( WITH_POLYP_SINK )
+if( WITH_PULSE_SINK )
 
-    pkg_search_module( POLYP polyplib-simple>=0.70 )
+    pkg_search_module( PULSE libpulse-simple>=0.9.2 )
 
-    if( NOT POLYP_FOUND )
-        tde_message_fatal( "polyplib-simple >= 0.70 are required, but not found on your system" )
-    endif( NOT POLYP_FOUND )
+    if( NOT PULSE_FOUND )
+        tde_message_fatal( "libpulse-simple >= 0.9.2 are required, but not found on your system" )
+    endif( NOT PULSE_FOUND )
 
-endif( WITH_POLYP_SINK )
+endif( WITH_PULSE_SINK )
 
 
 ##### check sun support #########################

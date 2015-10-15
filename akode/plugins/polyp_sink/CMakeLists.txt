@@ -15,7 +15,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/akode/lib
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${POLYP_INCLUDE_DIRS}
+  ${PULSE_INCLUDE_DIRS}
 )
 
 
@@ -26,7 +26,7 @@ set( target libakode_polyp_sink )
 tde_add_library(
   ${target} MODULE
   SOURCES polyp_sink.cpp
-  LINK akode-shared ${POLYP_LIBRARIES}
+  LINK akode-shared ${PULSE_LIBRARIES}
   DESTINATION ${LIB_INSTALL_DIR}
 )
 
