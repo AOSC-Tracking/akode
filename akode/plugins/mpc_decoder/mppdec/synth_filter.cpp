@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-typedef int ptrdiff_t;
-
 
 /* C O N S T A N T S */
 #undef _
