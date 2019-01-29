@@ -61,7 +61,7 @@ public:
     };
 };
 
-extern "C" MPCDecoderPlugin mpc_decoder;
+extern "C" AKODE_EXPORT MPCDecoderPlugin mpc_decoder;
 
 } // namespace
 

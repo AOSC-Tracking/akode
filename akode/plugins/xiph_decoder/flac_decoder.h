@@ -79,9 +79,9 @@ public:
     };
 };
 
-extern "C" FLACDecoderPlugin flac_decoder;
+extern "C" AKODE_EXPORT FLACDecoderPlugin flac_decoder;
 #ifdef HAVE_LIBFLAC113
-extern "C" FLACDecoderPlugin oggflac_decoder;
+extern "C" AKODE_EXPORT FLACDecoderPlugin oggflac_decoder;
 #endif
 
 #ifdef HAVE_LIBOGGFLAC
@@ -93,7 +93,7 @@ public:
     };
 };
 
-extern "C" OggFLACDecoderPlugin oggflac_decoder;
+extern "C" AKODE_EXPORT OggFLACDecoderPlugin oggflac_decoder;
 #endif
 
 } // namespace

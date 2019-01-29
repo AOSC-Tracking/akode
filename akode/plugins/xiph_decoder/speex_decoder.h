@@ -65,7 +65,7 @@ public:
     };
 };
 
-extern "C" SpeexDecoderPlugin speex_decoder;
+extern "C" AKODE_EXPORT SpeexDecoderPlugin speex_decoder;
 
 } // namespace
 

@@ -50,7 +50,7 @@ public:
     virtual SRCResampler* openResampler();
 };
 
-extern "C" SRCResamplerPlugin src_resampler;
+extern "C" AKODE_EXPORT SRCResamplerPlugin src_resampler;
 
 } // namespace
 

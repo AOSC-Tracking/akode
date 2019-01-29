@@ -64,7 +64,7 @@ public:
     };
 };
 
-extern "C" FFMPEGDecoderPlugin ffmpeg_decoder;
+extern "C" AKODE_EXPORT FFMPEGDecoderPlugin ffmpeg_decoder;
 
 } // namespace
 

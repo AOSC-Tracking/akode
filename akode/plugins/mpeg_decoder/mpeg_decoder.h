@@ -62,7 +62,7 @@ public:
     };
 };
 
-extern "C" MPEGDecoderPlugin mpeg_decoder;
+extern "C" AKODE_EXPORT MPEGDecoderPlugin mpeg_decoder;
 
 } // namespace
 
