@@ -62,7 +62,7 @@ public:
     };
 };
 
-extern "C" VorbisDecoderPlugin vorbis_decoder;
+extern "C" AKODE_EXPORT VorbisDecoderPlugin vorbis_decoder;
 
 } // namespace
 

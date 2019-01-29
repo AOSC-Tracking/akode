@@ -35,7 +35,7 @@ public:
     virtual Decoder* openDecoder(File* src);
 };
 
-extern "C" XiphDecoderPlugin xiph_decoder;
+extern "C" AKODE_EXPORT XiphDecoderPlugin xiph_decoder;
 
 } // namespace
 
