@@ -10,6 +10,20 @@
 #################################################
 
 
+# required stuff
+
+tde_setup_architecture_flags( )
+
+include(TestBigEndian)
+test_big_endian(WORDS_BIGENDIAN)
+
+tde_setup_largefiles( )
+
+if( WITH_GCC_VISIBILITY )
+    tde_setup_gcc_visibility( )
+endif( )
+
+
 ##### check for system libraries ################
 
 if( WITH_LIBLTDL )
