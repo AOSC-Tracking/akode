@@ -15,10 +15,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-if( UNIX )
-  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden" )
-  set( __KDE_HAVE_GCC_VISIBILITY 1 )
-endif( UNIX )
 configure_file( akode_export.h.cmake akode_export.h @ONLY )
 
 

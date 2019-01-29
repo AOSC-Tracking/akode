@@ -1,6 +1,6 @@
 #################################################
 #
-#  (C) 2015 Slávek Banko
+#  (C) 2015-2019 Slávek Banko
 #  slavek (DOT) banko (AT) axis.cz
 #
 #  Improvements and feedback are welcome
@@ -24,6 +24,7 @@ set( VERSION R14.0.5 )
 include( FindPkgConfig )
 include( CheckCXXSourceCompiles )
 include( CheckFunctionExists )
+include( CheckSymbolExists )
 include( CheckIncludeFile )
 include( CheckLibraryExists )
 
@@ -32,7 +33,6 @@ include( CheckLibraryExists )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" )
 include( TDEMacros )
-tde_setup_architecture_flags( )
 
 
 ##### setup install paths #######################
@@ -45,6 +45,7 @@ tde_setup_paths( )
 
 option( WITH_ALL_OPTIONS "Enable all optional support" OFF )
 
+option( WITH_GCC_VISIBILITY "Enable fvisibility and fvisibility-inlines-hidden" ${WITH_ALL_OPTIONS} )
 OPTION( WITH_LIBLTDL "Build with libltdl" ${WITH_ALL_OPTIONS} )
 
 OPTION( WITH_ALSA_SINK "Build with alsa sink" ${WITH_ALL_OPTIONS} )
