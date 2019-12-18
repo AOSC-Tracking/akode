@@ -16,7 +16,7 @@ cmake_minimum_required( VERSION 2.6 )
 
 project( akode )
 set( PACKAGE akode )
-set( VERSION R14.0.6 )
+set( VERSION R14.0.7 )
 
 
 ##### include essential cmake modules ###########
