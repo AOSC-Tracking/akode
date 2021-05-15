@@ -35,7 +35,7 @@
 
 namespace aKode {
 
-extern "C" { PulseSinkPlugin pulse_sink; };
+extern "C" { PulseSinkPlugin pulse_sink; }
 
 struct PulseSink::private_data
 {
