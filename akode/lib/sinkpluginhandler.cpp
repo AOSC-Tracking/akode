@@ -39,7 +39,7 @@ list<string> SinkPluginHandler::listSinkPlugins() {
 
 SinkPluginHandler::SinkPluginHandler(const string lib) : sink_plugin(0)
 {
-    if (lib.size() > 0);
+    if (lib.size() > 0)
         load(lib);
 }
 

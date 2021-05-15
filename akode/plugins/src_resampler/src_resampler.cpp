@@ -32,9 +32,9 @@ SRCResampler* SRCResamplerPlugin::openResampler() {
     return new SRCResampler();
 }
 
-extern "C" { SRCResamplerPlugin src_resampler; };
+extern "C" { SRCResamplerPlugin src_resampler; }
 
-SRCResampler::SRCResampler() : speed(1.0), sample_rate(44100) {};
+SRCResampler::SRCResampler() : speed(1.0), sample_rate(44100) {}
 
 template<typename S>
 static void _convert1_FP(AudioFrame *in, float* outdata)
