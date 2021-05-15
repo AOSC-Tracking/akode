@@ -53,9 +53,9 @@ bool SpeexDecoderPlugin::canDecode(File* src) {
             if (memcmp(header+28, "Speex   ",8) == 0) res = true;
     src->close();
     return res;
-};
+}
 
-extern "C" { SpeexDecoderPlugin speex_decoder; };
+extern "C" { SpeexDecoderPlugin speex_decoder; }
 
 struct SpeexDecoder::private_data
 {
@@ -107,7 +107,7 @@ SpeexDecoder::SpeexDecoder(File *src) {
 
     src->openRO();
     src->fadvise();
-};
+}
 
 SpeexDecoder::~SpeexDecoder() {
     if (m_data->initialized) {
