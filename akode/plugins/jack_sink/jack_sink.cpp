@@ -101,8 +101,9 @@ JACKSink::JACKSink()
     m_data = new private_data;
 }
 
-bool JACKSink::open() {
-    m_data->client = jack_client_new("akode_client");
+bool JACKSink::open()
+{
+    m_data->client = jack_client_open("akode_client", JackNoStartServer, 0);
     if (!m_data->client) {
         m_data->error = true;
         return false;
