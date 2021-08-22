@@ -94,7 +94,7 @@ long MMapFile::write(const char*, long) {
     return false;
 }
 
-bool MMapFile::seek(long to, int whence) {
+ssize_t MMapFile::seek(long to, int whence) {
     if(!handle) return false;
 
     long newpos = 0;
@@ -109,12 +109,12 @@ bool MMapFile::seek(long to, int whence) {
             newpos = len + to;
             break;
         default:
-            return false;
+            return length();
     }
     if (newpos > len || newpos < 0)
-        return false;
+        return -1;
     pos = newpos;
-    return true;
+    return newpos;
 }
 
 long MMapFile::position() const {
