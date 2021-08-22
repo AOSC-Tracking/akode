@@ -31,3 +31,4 @@ tde_add_library(
   DESTINATION ${LIB_INSTALL_DIR}
 )
 
+target_compile_definitions(${target}-module PRIVATE _FILE_OFFSET_BITS=64)
