@@ -30,4 +30,3 @@ tde_add_library(
   LINK akode-shared ${AVFORMAT_LIBRARIES} ${AVCODEC_LIBRARIES}
   DESTINATION ${LIB_INSTALL_DIR}
 )
-

@@ -169,6 +169,23 @@ if( WITH_FFMPEG_DECODER )
         tde_message_fatal( "libavcodec >= 50 are required, but not found on your system" )
     endif( NOT AVCODEC_FOUND )
 
+    pkg_search_module( AVUTIL libavutil>=50 )
+    if( NOT AVUTIL_FOUND )
+        tde_message_fatal( "libavutil >= 50 are required, but not found on your system" )
+    endif( NOT AVUTIL_FOUND )
+
+    message( STATUS "Looking for ffmpeg frame.h" )
+    find_file( AVFRAME_H NAMES frame.h avcodec.h
+        PATHS ${AVUTIL_INCLUDE_DIRS} ${AVCODEC_INCLUDE_DIRS}
+        PATH_SUFFIXES libavutil libavcodec
+    )
+    if( NOT AVFRAME_H )
+        tde_message_fatal( "FFMPEG header frame.h cannot be found!" )
+    endif()
+    message( STATUS "Looking for ffmpeg frame.h - found ${AVFRAME_H}" )
+    check_struct_has_member( AVFrame pkt_size ${AVFRAME_H} FFMPEG_AVFRAME_HAVE_PKT_SIZE )
+    check_struct_has_member( AVFrame channels ${AVFRAME_H} FFMPEG_AVFRAME_HAVE_CHANNELS )
+
     set( HAVE_FFMPEG 1 )
 
 endif( WITH_FFMPEG_DECODER )
