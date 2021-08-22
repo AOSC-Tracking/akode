@@ -50,7 +50,7 @@ public:
     long read(char* ptr, long num);
     long write(const char* ptr, long num);
 
-    bool seek(long to, int whence = SEEK_SET);
+    ssize_t seek(long to, int whence = SEEK_SET);
     long position() const;
     long length() const;
 
