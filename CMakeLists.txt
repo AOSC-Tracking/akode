@@ -27,6 +27,7 @@ include( CheckFunctionExists )
 include( CheckSymbolExists )
 include( CheckIncludeFile )
 include( CheckLibraryExists )
+include( CheckStructHasMember )
 
 
 ##### include our cmake modules

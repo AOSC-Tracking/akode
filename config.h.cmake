@@ -39,6 +39,10 @@
    and RealAudio decoding) */
 #cmakedefine HAVE_FFMPEG
 
+/* Define if struct AVFrame have appropriate members */
+#cmakedefine FFMPEG_AVFRAME_HAVE_PKT_SIZE 1
+#cmakedefine FFMPEG_AVFRAME_HAVE_CHANNELS 1
+
 /* Define if you have libFLAC 1.1.3 or newer */
 #cmakedefine HAVE_LIBFLAC113
 
