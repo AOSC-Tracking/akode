@@ -76,7 +76,7 @@ public:
     * Seeks to the position.
     * Behaves semantically as lseek.
     */
-    virtual bool seek(long to, int whence = SEEK_SET) = 0;
+    virtual ssize_t seek(long to, int whence = SEEK_SET) = 0;
    /*!
     * Returns current position in file, or negative if unknown.
     */

@@ -115,11 +115,11 @@ long LocalFile::write(const char* ptr, long num) {
     return n;
 }
 
-bool LocalFile::seek(long to, int whence) {
-    if(_fd == -1) return false;
-    int s = ::lseek(_fd, to, whence);
+ssize_t LocalFile::seek(long to, int whence) {
+    if(_fd == -1) return -1;
+    ssize_t s = ::lseek(_fd, to, whence);
     if (s >= 0) pos = s;
-    return (s >= 0);
+    return s;
 }
 
 long LocalFile::position() const {
