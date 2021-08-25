@@ -18,6 +18,8 @@
     Boston, MA 02110-1301, USA.
 */
 
+#define __STDC_CONSTANT_MACROS
+
 #include "akodelib.h"
 // #ifdef HAVE_FFMPEG
 
@@ -236,7 +238,11 @@ void FFMPEGDecoder::closeFile() {
 #endif
     }
     if( d->packetSize > 0 ) {
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
+        av_free_packet(&d->packet);
+#else
         av_packet_unref( &d->packet );
+#endif
         d->packetSize = 0;
     }
 
@@ -259,7 +265,11 @@ bool FFMPEGDecoder::readPacket() {
     do {
         av_init_packet(&d->packet);
         if ( av_read_frame(d->ic, &d->packet) < 0 ) {
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
+            av_free_packet(&d->packet);
+#else
             av_packet_unref( &d->packet );
+#endif
             d->packetSize = 0;
             d->packetData = 0;
             return false;
@@ -269,7 +279,11 @@ bool FFMPEGDecoder::readPacket() {
             d->packetData = d->packet.data;
             return true;
         }
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
+        av_free_packet(&d->packet);
+#else
         av_packet_unref(&d->packet);
+#endif
     } while (true);
 
     return false;
@@ -313,7 +327,11 @@ bool FFMPEGDecoder::readFrame(AudioFrame* frame)
     assert(d->packet.stream_index == d->audioStream);
 
 retry:
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 45, 101)
+    AVFrame *decodeFrame = avcodec_alloc_frame();
+#else
     AVFrame *decodeFrame = av_frame_alloc();
+#endif
     if (!decodeFrame) {
         return false;
     }
@@ -363,12 +381,24 @@ retry:
         default:
             assert(false);
     }
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(54, 28, 0)
+    av_free(decodeFrame);
+#elif LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 45, 101)
+    avcodec_free_frame(&decodeFrame);
+#else
     av_frame_free(&decodeFrame);
+#endif
     if (length == 0) return readFrame(frame);
     // std::cout << "akode: FFMPEG: Frame length: " << length << "\n";
 
     if( d->packetSize <= 0 )
+    {
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
+        av_free_packet(&d->packet);
+#else
         av_packet_unref( &d->packet );
+#endif
+    }
 
     frame->pos = (d->position*1000)/d->config.sample_rate;
     d->position += length;
