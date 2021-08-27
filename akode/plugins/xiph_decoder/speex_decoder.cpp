@@ -327,7 +327,7 @@ bool SpeexDecoder::seek(long pos) {
     if(!m_data->initialized) return false;
 
     long bpos = (long)(((float)pos*(float)m_data->bitrate)/8000.0);
-    if (m_data->src->seek(bpos)) {
+    if (m_data->src->lseek(bpos)) {
         speex_bits_reset(&m_data->bits);
         ogg_sync_reset(&m_data->sync);
         ogg_stream_reset(&m_data->stream);

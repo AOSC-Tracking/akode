@@ -52,7 +52,7 @@ bool MPEGDecoderPlugin::canDecode(File* src) {
             size += buf[4] << 7;
             size += buf[3] << 14;
             size += buf[2] << 21;
-            src->seek(10+size);
+            src->lseek(10+size);
             src->read(header, 4);
         }
         if (buf[0] == 0xff && (buf[1] & 14)) // frame synchronizer
@@ -142,7 +142,7 @@ MPEGDecoder::~MPEGDecoder() {
 }
 
 bool MPEGDecoder::skipID3v2() {
-    m_data->src->seek(0);
+    m_data->src->lseek(0);
     m_data->id3v2size = 0;
     char buf[16];
     if (m_data->src->read(buf, 10)) {
@@ -158,7 +158,7 @@ bool MPEGDecoder::skipID3v2() {
             size += buf[7] << 14;
             size += buf[6] << 21;
             m_data->id3v2size = size;
-            if (!m_data->src->seek(10+size)) {
+            if (!m_data->src->lseek(10+size)) {
                 char space[256];
                 for(int i=0; i<size; ) {
                     i += m_data->src->read(space, (size-i) > 256 ?  256 : (size-i));
@@ -167,7 +167,7 @@ bool MPEGDecoder::skipID3v2() {
             return true;
         }
     }
-    if (!m_data->src->seek(0)) {
+    if (!m_data->src->lseek(0)) {
         mad_stream_buffer(&m_data->stream, (uint8_t*)buf, 10);
     }
     return false;
@@ -542,7 +542,7 @@ bool MPEGDecoder::seek(long pos) {
         #ifdef MPEG_DEBUG
         cerr << "TOC seeking " << procent << "/100 -> " << (long)(place*256.0) << "/256\n" ;
         #endif
-        res = m_data->src->seek(bpos);
+        res = m_data->src->lseek(bpos);
         if (res)
             m_data->position = (long)(((float)procent/100.0)*mpeg_length(m_data)*m_data->config.sample_rate);
     }
@@ -552,7 +552,7 @@ bool MPEGDecoder::seek(long pos) {
         #endif
         long bpos = (long)((((float)pos)*m_data->bitrate)/8000.0);
         bpos += m_data->id3v2size;
-        res = m_data->src->seek(bpos);
+        res = m_data->src->lseek(bpos);
         if (res)
             m_data->position = (long)(((float)pos*(float)m_data->config.sample_rate)/1000.0);
     }

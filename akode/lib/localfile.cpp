@@ -53,7 +53,7 @@ LocalFile::~LocalFile() {
 
 bool LocalFile::openRO() {
     if(_fd != -1) {
-        return seek(0) && m_readable;
+        return lseek(0) && m_readable;
     }
 
     struct stat stat;
@@ -69,7 +69,7 @@ bool LocalFile::openRO() {
 
 bool LocalFile::openRW() {
     if(_fd != -1) {
-        return seek(0) && m_readable && m_writeable;
+        return lseek(0) && m_readable && m_writeable;
     }
 
     struct stat stat;
@@ -84,7 +84,7 @@ bool LocalFile::openRW() {
 
 bool LocalFile::openWO() {
     if(_fd != -1) {
-        return seek(0) && m_writeable;
+        return lseek(0) && m_writeable;
     }
 
     _fd = ::open(filename, O_WRONLY);
@@ -115,7 +115,7 @@ long LocalFile::write(const char* ptr, long num) {
     return n;
 }
 
-ssize_t LocalFile::seek(long to, int whence) {
+ssize_t LocalFile::lseek(long to, int whence) {
     if(_fd == -1) return -1;
     ssize_t s = ::lseek(_fd, to, whence);
     if (s >= 0) pos = s;

@@ -74,7 +74,7 @@ namespace aKode {
     Format* detectOgg(File *src, int skip) {
         Format *res = 0;
         char oggmagic[7];
-        src->seek(skip+28);
+        src->lseek(skip+28);
         src->read(oggmagic, 7);
 
         for (OggMagic *i = ogg_magic; i->len >0; i++) {
@@ -88,11 +88,11 @@ namespace aKode {
     string detectRIFF(File *src, int skip) {
         string res;
         char riffmagic[4];
-        src->seek(skip+8);
+        src->lseek(skip+8);
         src->read(riffmagic, 4);
         if (memcmp(riffmagic, "WAVE",4) == 0) {
             char wavmagic[2];
-            src->seek(skip+20);
+            src->lseek(skip+20);
             src->read(wavmagic, 2);
             if (wavmagic[0] == 1)
                 res = "wav";
@@ -109,7 +109,7 @@ namespace aKode {
     string detectMPEG(File *src, int skip) {
         string res;
         unsigned char mpegheader[2];
-        src->seek(skip);
+        src->lseek(skip);
         src->read((char*)mpegheader, 2);
 
         if (mpegheader[0] == 0xff && (mpegheader[1] & 0xe0) == 0xe0) // frame synchronizer
@@ -144,7 +144,7 @@ namespace aKode {
 
         int skip = detectID3v2(src);
         char magic[4];
-        src->seek(skip);
+        src->lseek(skip);
         src->read(magic, 4);
 
         if (memcmp(magic, "fLaC", 4) == 0)
