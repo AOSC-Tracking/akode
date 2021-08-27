@@ -58,7 +58,7 @@ extern "C" {
     static off_t akode_seek(void* opaque, off_t pos, int whence)
     {
         aKode::File *file = (aKode::File*)opaque;
-        return file->seek(pos, whence);
+        return file->lseek(pos, whence);
     }
 }
 

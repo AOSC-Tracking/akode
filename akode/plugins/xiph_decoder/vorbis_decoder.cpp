@@ -39,7 +39,7 @@ static size_t _read(void *ptr, size_t size, size_t nmemb, void *datasource) {
 
 static int _seek(void *datasource, ogg_int64_t offset, int whence) {
     File *src = (File*)datasource;
-    if (src->seek(offset, whence))
+    if (src->lseek(offset, whence))
         return 0;
     else
         return -1;

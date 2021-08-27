@@ -41,7 +41,7 @@ class FLACDecoder;
 static bool checkFLAC(File *src) {
     char header[6];
     bool res = false;
-    src->seek(0);
+    src->lseek(0);
     if(src->read(header, 4) == 4) {
         // skip id3v2 headers
         if (memcmp(header, "ID3", 3) == 0) {
@@ -52,7 +52,7 @@ static bool checkFLAC(File *src) {
             size += header[4] << 7;
             size += header[3] << 14;
             size += header[2] << 21;
-            src->seek(10+size);
+            src->lseek(10+size);
             if (src->read(header, 4) != 4) goto end;
         }
         if (memcmp(header, "fLaC",4) == 0 ) res = true;
@@ -64,7 +64,7 @@ end:
 static bool checkOggFLAC(File *src) {
     char header[34];
     bool res = false;
-    src->seek(0);
+    src->lseek(0);
     if (src->read(header, 34) == 34)
         if (memcmp(header, "OggS",4) == 0 )
             // old FLAC 1.1.0 format
@@ -134,7 +134,7 @@ static FLAC__StreamDecoderSeekStatus flac_seek_callback(
 {
     FLACDecoder::private_data *data = (FLACDecoder::private_data*)client_data;
 
-    if(data->source->seek(absolute_byte_offset))
+    if(data->source->lseek(absolute_byte_offset))
         return FLAC__STREAM_DECODER_SEEK_STATUS_OK;
     else
         return FLAC__STREAM_DECODER_SEEK_STATUS_ERROR;

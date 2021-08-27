@@ -48,7 +48,7 @@ public:
             m_file->close();
         }
 	size_t read ( void *ptr, size_t size ) {return m_file->read((char*)ptr,size);}
-	bool seek ( int offset, int origin ) {return m_file->seek(offset,origin);}
+	bool seek ( int offset, int origin ) {return m_file->lseek(offset,origin);}
 	long tell () {return m_file->position();}
 	long get_size () {return m_file->length();}
 	bool canseek() {return m_file->seekable();}

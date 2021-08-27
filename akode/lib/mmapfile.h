@@ -47,7 +47,7 @@ public:
     long read(char* ptr, long num);
     long write(const char*, long);
 
-    ssize_t seek(long to, int whence = SEEK_SET);
+    ssize_t lseek(long to, int whence = SEEK_SET);
     long position() const;
     long length() const;
 

@@ -34,9 +34,9 @@ bool WavDecoderPlugin::canDecode(File* src) {
     bool res = false;
     src->openRO();
     if (src->read(header, 4) != 4 || memcmp(header, "RIFF",4) != 0 ) goto close;
-    src->seek(8);
+    src->lseek(8);
     if (src->read(header, 4) != 4 || memcmp(header, "WAVE",4) != 0 ) goto close;
-    src->seek(20);
+    src->lseek(20);
     if (src->read(header, 2) != 2 || memcmp(header, "\x01\0",2) != 0 ) goto close;
     res = true;
 close:
@@ -77,11 +77,11 @@ bool WavDecoder::openFile(File* src) {
 
     // Get format information
     unsigned char buffer[4];
-    src->seek(4);
+    src->lseek(4);
     src->read((char*)buffer, 4); // size of stream
     d->length = buffer[0] + buffer[1]*256 + buffer[2] * (1<<16) + buffer[3] * (1<<24) + 8;
 
-    src->seek(16);
+    src->lseek(16);
     src->read((char*)buffer, 4); // should really be 16
     d->pos = 20 + buffer[0] + buffer[1]*256;
     if (buffer[2] != 0 || buffer[3] != 0) goto invalid;
@@ -99,7 +99,7 @@ bool WavDecoder::openFile(File* src) {
     src->read((char*)buffer, 4);
     d->config.sample_rate = buffer[0] + buffer[1]*256 + buffer[2] * (1<<16) + buffer[3] * (1<<24);
 
-    src->seek(34);
+    src->lseek(34);
     src->read((char*)buffer, 2);
     d->config.sample_width = buffer[0] + buffer[1]*256;
 
@@ -108,7 +108,7 @@ bool WavDecoder::openFile(File* src) {
     if (d->config.sample_rate > 200000) goto invalid;
 
 find_data:
-    src->seek(d->pos);
+    src->lseek(d->pos);
     src->read((char*)buffer, 4);
     if (memcmp(buffer, "data", 4) != 0)
       if (memcmp(buffer, "clm ", 4) != 0)
@@ -119,7 +119,7 @@ find_data:
         goto find_data;
       }
 
-    src->seek(d->pos+8); // start of data
+    src->lseek(d->pos+8); // start of data
     d->position = 0;
     d->valid = true;
     // 1024 samples:
@@ -219,7 +219,7 @@ bool WavDecoder::seek(long pos) {
     long sample_pos = (pos * byterate) / 1000;
     long byte_pos = sample_pos * samplesize;
     if (byte_pos+44 >= d->length) return false;
-    if (!d->src->seek(byte_pos+44)) return false;
+    if (!d->src->lseek(byte_pos+44)) return false;
     d->pos = byte_pos + 44;
     return true;
 }
