@@ -15,10 +15,10 @@ plugins to play a variety of formats:
 aKode focuses on performance, which means a big enhancement for users
 runing aRts in non-realtime mode.
 
+.
 
-
- CONTRIBUTING
-==============
+Contributing
+--------------
 
 If you wish to contribute to aKode (TDE), you might do so:
 
