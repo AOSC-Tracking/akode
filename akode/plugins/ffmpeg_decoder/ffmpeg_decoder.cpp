@@ -37,7 +37,7 @@ extern "C" {
 #include "ffmpeg_decoder.h"
 #include <iostream>
 
-#if LIBAVCODEC_VERSION_MAJOR < 58
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(57, 33, 100)
 #define CODECPAR codec
 #else
 #define CODECPAR codecpar
@@ -69,10 +69,6 @@ bool FFMPEGDecoderPlugin::canDecode(File* /*src*/) {
     // ### FIXME
     return true;
 }
-/*
-void FFMPEGDecoderPlugin::initializeFFMPEG() {
-    av_register_all();
-}*/
 
 extern "C" { FFMPEGDecoderPlugin ffmpeg_decoder; }
 
@@ -81,7 +77,8 @@ extern "C" { FFMPEGDecoderPlugin ffmpeg_decoder; }
 struct FFMPEGDecoder::private_data
 {
     private_data() : audioStream(-1), videoStream(-1), packetSize(0), position(0),
-                     eof(false), error(false), initialized(false), retries(0) {};
+                     eof(false), error(false), initialized(false), retries(0),
+                     packet(NULL), audioStream_ctx(NULL), videoStream_ctx(NULL) {};
 
     AVFormatContext* ic;
     AVCodec* codec;
@@ -90,8 +87,13 @@ struct FFMPEGDecoder::private_data
 
     int audioStream;
     int videoStream;
+    AVCodecContext *audioStream_ctx;
+    AVCodecContext *videoStream_ctx;
 
-    AVPacket packet;
+    AVPacket *packet;
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 12, 100)
+    AVPacket _packet;
+#endif
     uint8_t* packetData;
     int packetSize;
 
@@ -113,6 +115,9 @@ FFMPEGDecoder::FFMPEGDecoder(File *src) {
     d = new private_data;
 
     d->src = src;
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(58,9,100)
+    av_register_all();
+#endif
 }
 
 FFMPEGDecoder::~FFMPEGDecoder() {
@@ -206,20 +211,41 @@ bool FFMPEGDecoder::openFile() {
 
     av_dump_format(d->ic, d->audioStream, d->src->filename, 0);
 
-    // Set config
-    if (!setAudioConfiguration(&d->config, d->ic->streams[d->audioStream]->codec))
-    {
-        closeFile();
-        return false;
-    }
-
-    d->codec = avcodec_find_decoder(d->ic->streams[d->audioStream]->CODECPAR->codec_id);
+    d->codec = (AVCodec *)avcodec_find_decoder(d->ic->streams[d->audioStream]->CODECPAR->codec_id);
     if (!d->codec) {
         std::cerr << "akode: FFMPEG: Codec not found\n";
         closeFile();
         return false;
     }
-    avcodec_open2( d->ic->streams[d->audioStream]->codec, d->codec, NULL );
+
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(57, 33, 100)
+    // allocate a codec context
+    d->audioStream_ctx = avcodec_alloc_context3(d->codec);
+    if (d->audioStream_ctx) {
+        avcodec_parameters_to_context(d->audioStream_ctx, d->ic->streams[d->audioStream]->codecpar);
+    }
+    else {
+        std::cerr << "akode: failed to allocate an audio codec context\n";
+        closeFile();
+        return false;
+    }
+#else
+    d->audioStream_ctx = d->ic->streams[d->audioStream]->codec;
+#endif
+
+    // Set config
+    if (!setAudioConfiguration(&d->config, d->audioStream_ctx))
+    {
+        closeFile();
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(57, 33, 100)
+        avcodec_free_context(&d->audioStream_ctx);
+#else
+        d->audioStream_ctx = NULL;
+#endif
+        return false;
+    }
+
+    avcodec_open2( d->audioStream_ctx, d->codec, NULL );
 
     double ffpos = (double)d->ic->streams[d->audioStream]->start_time / (double)AV_TIME_BASE;
     d->position = (long)(ffpos * d->config.sample_rate);
@@ -239,20 +265,28 @@ void FFMPEGDecoder::closeFile() {
     }
     if( d->packetSize > 0 ) {
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
-        av_free_packet(&d->packet);
+        av_free_packet(&d->_packet);
 #else
-        av_packet_unref( &d->packet );
+        av_packet_unref( d->packet );
 #endif
+        d->packet = NULL;
         d->packetSize = 0;
     }
 
     if( d->codec ) {
-        avcodec_close( d->ic->streams[d->audioStream]->codec );
+        avcodec_close( d->audioStream_ctx );
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(57, 33, 100)
+        avcodec_free_context(&d->audioStream_ctx);
+#else
+        d->audioStream_ctx = NULL;
+#endif
         d->codec = 0;
     }
     if( d->ic ) {
         // make sure av_close_input_file doesn't actually close the file
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(59, 0, 100)
         d->ic->iformat->flags = d->ic->iformat->flags | AVFMT_NOFILE;
+#endif
         avformat_close_input( &d->ic );
         d->ic = 0;
     }
@@ -263,27 +297,34 @@ void FFMPEGDecoder::closeFile() {
 
 bool FFMPEGDecoder::readPacket() {
     do {
-        av_init_packet(&d->packet);
-        if ( av_read_frame(d->ic, &d->packet) < 0 ) {
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
-            av_free_packet(&d->packet);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 12, 100)
+        d->packet = av_packet_alloc();
 #else
-            av_packet_unref( &d->packet );
+        av_init_packet(&d->_packet);
+        d->packet = &d->_packet;
 #endif
+        if ( av_read_frame(d->ic, d->packet) < 0 ) {
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
+            av_free_packet(&d->_packet);
+#else
+            av_packet_unref( d->packet );
+#endif
+            d->packet = NULL;
             d->packetSize = 0;
             d->packetData = 0;
             return false;
         }
-        if (d->packet.stream_index == d->audioStream) {
-            d->packetSize = d->packet.size;
-            d->packetData = d->packet.data;
+        if (d->packet->stream_index == d->audioStream) {
+            d->packetSize = d->packet->size;
+            d->packetData = d->packet->data;
             return true;
         }
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
-        av_free_packet(&d->packet);
+        av_free_packet(&d->_packet);
 #else
-        av_packet_unref(&d->packet);
+        av_packet_unref(d->packet);
 #endif
+        d->packet = NULL;
     } while (true);
 
     return false;
@@ -324,7 +365,7 @@ bool FFMPEGDecoder::readFrame(AudioFrame* frame)
             return false;
         }
 
-    assert(d->packet.stream_index == d->audioStream);
+    assert(d->packet->stream_index == d->audioStream);
 
 retry:
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 45, 101)
@@ -336,19 +377,43 @@ retry:
         return false;
     }
     int decoded;
-    int len = avcodec_decode_audio4( d->ic->streams[d->audioStream]->codec,
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 12, 100)
+    int len = avcodec_receive_frame(d->audioStream_ctx, decodeFrame);
+    if (len == 0) {
+        decoded = 1;
+    }
+    else if (len == AVERROR(EAGAIN)) {
+        len = 0;
+    }
+                    
+    if (len == 0) {
+        len = avcodec_send_packet(d->audioStream_ctx, d->packet);
+        if (len == AVERROR(EAGAIN)) {
+            len = 0;
+        }
+        else
+        {
+            len = d->packet->size;
+            d->packetSize = d->packet->size;
+        }
+    }
+#else
+    int len = avcodec_decode_audio4( d->audioStream_ctx,
                                     decodeFrame, &decoded,
-                                    &d->packet );
+                                    d->packet );
 #if !defined(FFMPEG_AVFRAME_HAVE_PKT_SIZE)
-    d->packetSize = d->packet.size;
+    d->packetSize = d->packet->size;
 #else
     d->packetSize = decodeFrame->pkt_size;
 #endif
+#endif
+
     d->buffer = decodeFrame->data;
 #if !defined(FFMPEG_AVFRAME_HAVE_CHANNELS)
-    d->buffer_size = decodeFrame->nb_samples * d->ic->streams[d->audioStream]->codec->channels * av_get_bytes_per_sample(d->ic->streams[d->audioStream]->codec->sample_fmt);
+    d->buffer_size = decodeFrame->nb_samples * d->ic->streams[d->audioStream]->CODECPAR->channels * av_get_bytes_per_sample(d->ic->streams[d->audioStream]->codec->sample_fmt);
 #else
-    d->buffer_size = decodeFrame->nb_samples * decodeFrame->channels * av_get_bytes_per_sample(d->ic->streams[d->audioStream]->codec->sample_fmt);
+    d->buffer_size = decodeFrame->nb_samples * decodeFrame->channels * av_get_bytes_per_sample(d->audioStream_ctx->sample_fmt);
 #endif
 
     if (len <= 0) {
@@ -394,10 +459,11 @@ retry:
     if( d->packetSize <= 0 )
     {
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 7, 0)
-        av_free_packet(&d->packet);
+        av_free_packet(&d->_packet);
 #else
-        av_packet_unref( &d->packet );
+        av_packet_unref( d->packet );
 #endif
+    d->packet = NULL;
     }
 
     frame->pos = (d->position*1000)/d->config.sample_rate;
