@@ -378,7 +378,7 @@ retry:
     }
     int decoded;
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 12, 100)
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 106, 100)
     int len = avcodec_receive_frame(d->audioStream_ctx, decodeFrame);
     if (len == 0) {
         decoded = 1;
