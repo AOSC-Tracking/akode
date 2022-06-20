@@ -16,7 +16,7 @@ cmake_minimum_required( VERSION 3.1 )
 
 project( akode )
 set( PACKAGE akode )
-set( VERSION 2.0.2 )
+set( PACKAGE_VERSION 2.0.2 )
 
 
 ##### include essential cmake modules
@@ -33,6 +33,11 @@ include( CheckStructHasMember )
 ##### include our cmake modules
 
 include( TDEMacros )
+
+
+##### set version number ########################
+
+tde_set_project_version( )
 
 
 ##### setup install paths
