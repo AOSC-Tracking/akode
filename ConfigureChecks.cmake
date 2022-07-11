@@ -195,7 +195,7 @@ endif( WITH_FFMPEG_DECODER )
 
 if( WITH_MPEG_DECODER )
 
-    pkg_search_module( MAD mad )
+    pkg_search_module( MAD libmad mad )
 
     if( NOT MAD_FOUND )
         find_library( MAD_LIBRARIES NAMES mad )
