@@ -1,4 +1,4 @@
-#ifndef _requant_h
+#ifndef _requant_h_
 #define _requant_h_
 
 #include "mpc_dec.h"
