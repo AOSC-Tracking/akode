@@ -210,7 +210,7 @@ endif( WITH_MPEG_DECODER )
 
 ##### check FLAC support ########################
 
-if( WITH_XIPH_DECODER )
+if( WITH_XIPH_DECODER AND WITH_XIPH_FLAC )
 
     # check for FLAC module
     pkg_search_module( FLAC flac>=1.1.3 )
@@ -254,12 +254,12 @@ if( WITH_XIPH_DECODER )
         tde_message_fatal( "FLAC >= 1.1.1 are required, but not found on your system" )
     endif( NOT FLAC_LIBRARIES )
 
-endif( WITH_XIPH_DECODER )
+endif( WITH_XIPH_DECODER AND WITH_XIPH_FLAC )
 
 
 ##### check speex support #######################
 
-if( WITH_XIPH_DECODER )
+if( WITH_XIPH_DECODER AND WITH_XIPH_SPEEX )
 
     # check for speex module
     pkg_search_module( SPEEX speex>=1.2 )
@@ -291,12 +291,12 @@ if( WITH_XIPH_DECODER )
         tde_message_fatal( "speex are required, but not found on your system" )
     endif( SPEEX_FOUND )
 
-endif( WITH_XIPH_DECODER )
+endif( WITH_XIPH_DECODER AND WITH_XIPH_SPEEX )
 
 
 ##### check ogg/vorbis support ##################
 
-if( WITH_XIPH_DECODER )
+if( WITH_XIPH_DECODER AND WITH_XIPH_VORBIS )
 
     pkg_search_module( OGG ogg )
     if( NOT OGG_FOUND )
@@ -315,7 +315,7 @@ if( WITH_XIPH_DECODER )
 
     set( HAVE_OGG_VORBIS 1 )
 
-endif( WITH_XIPH_DECODER )
+endif( WITH_XIPH_DECODER AND WITH_XIPH_VORBIS )
 
 
 ##### check samplerate support ##################
