@@ -20,7 +20,7 @@
 #ifndef AKODE_EXPORT_H
 #define AKODE_EXPORT_H
 
-#cmakedefine __KDE_HAVE_GCC_VISIBILITY 1
+#cmakedefine __TDE_HAVE_GCC_VISIBILITY 1
 
 /**
  * The ARTS_NO_EXPORT macro marks the symbol of the given variable
@@ -36,7 +36,7 @@
  * \end
  */
 
-#if defined(__KDE_HAVE_GCC_VISIBILITY)
+#if defined(__TDE_HAVE_GCC_VISIBILITY)
 /* Visibility is available for GCC newer than 3.4.
  * See: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=9283
  */
