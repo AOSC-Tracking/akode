@@ -45,12 +45,16 @@ extern "C" {
 
 // FFMPEG callbacks
 extern "C" {
-    static int akode_read(void* opaque, unsigned char *buf, int size)
+    static int akode_read(void* opaque, uint8_t *buf, int size)
     {
         aKode::File *file = (aKode::File*)opaque;
         return file->read((char*)buf, size);
     }
-    static int akode_write(void* opaque, unsigned char *buf, int size)
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(60, 16, 100)
+    static int akode_write(void* opaque, uint8_t *buf, int size)
+#else
+    static int akode_write(void* opaque, const uint8_t *buf, int size)
+#endif
     {
         aKode::File *file = (aKode::File*)opaque;
         return file->write((char*)buf, size);
@@ -129,7 +133,11 @@ FFMPEGDecoder::~FFMPEGDecoder() {
 static bool setAudioConfiguration(AudioConfiguration *config, AVCodecContext *codec_context)
 {
     config->sample_rate = codec_context->sample_rate;
+# if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(59, 24, 100)
     config->channels = codec_context->channels;
+# else
+    config->channels = codec_context->ch_layout.nb_channels;
+# endif
     // I do not know FFMPEGs surround channel ordering
     if (config->channels > 2) return false;
     config->channel_config = MonoStereo;
@@ -411,7 +419,11 @@ retry:
 
     d->buffer = decodeFrame->data;
 #if !defined(FFMPEG_AVFRAME_HAVE_CHANNELS)
+# if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(59, 24, 100)
     d->buffer_size = decodeFrame->nb_samples * d->ic->streams[d->audioStream]->CODECPAR->channels * av_get_bytes_per_sample(d->ic->streams[d->audioStream]->codec->sample_fmt);
+# else
+    d->buffer_size = decodeFrame->nb_samples * d->ic->streams[d->audioStream]->CODECPAR->ch_layout.nb_channels * av_get_bytes_per_sample((AVSampleFormat)d->ic->streams[d->audioStream]->codecpar->format);
+# endif
 #else
     d->buffer_size = decodeFrame->nb_samples * decodeFrame->channels * av_get_bytes_per_sample(d->audioStream_ctx->sample_fmt);
 #endif
