@@ -50,7 +50,7 @@ extern "C" {
         aKode::File *file = (aKode::File*)opaque;
         return file->read((char*)buf, size);
     }
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(60, 16, 100)
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(61, 0, 100)
     static int akode_write(void* opaque, uint8_t *buf, int size)
 #else
     static int akode_write(void* opaque, const uint8_t *buf, int size)
